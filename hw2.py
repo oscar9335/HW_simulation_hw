@@ -2,13 +2,14 @@ import random
 import math
 from math import e
 
-def simulation_one(x,cast_time):
-    function_one = (x+x**x)
-    e**function_one
+def simulation_one(cast_time):
+    for i in range(cast_time):
+        x = random.uniform(-2,2)
+        first = (x+x**2)
+        obtain = e**first
+        print(obtain)
 
-    num = random(-2,2)
+simulation_one(5)
 
 
-num = random.uniform(-2,2)
-
-print(num)
+    
