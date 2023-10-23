@@ -1,5 +1,7 @@
 import random
 import math
+import matplotlib.pyplot as plt
+import numpy as np
 
 def generate_poisson_process(rate, T):
     t = 0
@@ -18,9 +20,21 @@ def generate_poisson_process(rate, T):
 
     return S
 
-# Example usage:
-rate = 2.0  # Adjust the rate as needed
-T = 10.0   # Adjust the time period as needed
-poisson_process = generate_poisson_process(rate, T)
-print("Poisson process events:", poisson_process)
-print("Number of events:", len(poisson_process))
+
+rate = 1.0  # Adjust the rate as needed
+T = 1.0   # Adjust the time period as needed
+number_events = []
+for i in range(1000000):
+    poisson_process = generate_poisson_process(rate, T)
+    number_events.append(len(poisson_process))
+
+unique, counts = np.unique(number_events, return_counts=True)
+a_dict = dict(zip(unique, counts))
+print(max(a_dict,key=a_dict.get))
+fig = plt.figure()
+plt.xlabel('Number of events')
+plt.ylabel('Number of events corresponding counts')
+plt.plot(unique, counts,marker = 'o')
+plt.show()
+fig.savefig('method 1 Number of events counting plot with rate = 1.0' + '.png',dpi=500)
+
