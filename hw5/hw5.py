@@ -29,8 +29,10 @@ for i in range(100000):
 
 
 # plt.figure(figsize = (20, 10))
+fig = plt.figure()
 p1 = plt.hist(all_X,bins='auto',density=True)
 plt.xlabel("X")
-plt.ylabel("how many times it appeard")
+plt.ylabel("density")
 plt.title("")
 plt.show()
+fig.savefig('question1'+ ".png" ,dpi=500)
