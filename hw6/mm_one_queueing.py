@@ -8,10 +8,10 @@ def simulate_mm1_queue(lambda_arrival, mu_service, simulation_time, num_simulati
     count_service = 0
 
     for _ in range(num_simulations):
-        time = 0
+        time = 0  # the time the mall open? 
         queue = []
         server_busy = False
-        next_arrival = -np.log(1 - random.random()) / lambda_arrival
+        next_arrival = -np.log(1 - random.random()) / lambda_arrival   # this part use the possion process 
 
         while time < simulation_time:
             if next_arrival < mu_service and not server_busy:
