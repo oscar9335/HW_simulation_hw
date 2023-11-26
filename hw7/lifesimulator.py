@@ -144,33 +144,34 @@ def plot_distribution(people: list, column:int):
 
 
 def main():
-    people = create_population_birth(100000)
+    # 10000次模擬 每次 產生10000人
+    for simulation in range(10000):
+        people = create_population_birth(10000)
+        w=[]
+        e=[]
+        final_wealth = []
+        s = []
 
-    w=[]
-    e=[]
-    final_wealth = []
-    s = []
-    
+        for i in range (10000):
+            w_who,e_who,final,start_wealth = event_set(people,i)
+            w.append(w_who)
+            e.append(e_who)
+            s.append(start_wealth)
+            final_wealth.append(final)
+            
+# 下面要將要討論的點所產生出的模擬記錄下來，應該適用CSV黨存，或是直接硬幹
+    # 看最終財富最多的人     
+        # mmm = max(final_wealth)
+        # print(mmm)
+        # the_index = final_wealth.index(mmm)
 
-    for i in range (100000):
-        w_who,e_who,final,start_wealth = event_set(people,i)
-        w.append(w_who)
-        e.append(e_who)
-        s.append(start_wealth)
-        final_wealth.append(final)
-        
-
-# 看最終財富最多的人     
-    # mmm = max(final_wealth)
-    # print(mmm)
-    # the_index = final_wealth.index(mmm)
-# 看初始財富最少的人
-    mmm = min(s)
-    the_index = s.index(mmm)
-    print(w[the_index])
-    print(e[the_index])
-    print(people[the_index])
-    print(s[the_index])
+    # 看初始財富最少的人
+        mmm = min(s)
+        the_index = s.index(mmm)
+        print(w[the_index])
+        print(e[the_index])
+        print(people[the_index])
+        print(s[the_index])
 
 
 main()
