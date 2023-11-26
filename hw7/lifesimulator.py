@@ -39,7 +39,7 @@ def create_population_birth( population:int ) -> dict[str]:
 # luck value set
     # this is the statisic from Internet
     mean_luck = 50  # Mean IQ
-    std_dev_luck = 10  # Standard deviation of IQ
+    std_dev_luck = 5  # Standard deviation of IQ
     # Generate a sample of IQ scores from a normal distribution
     luck_scores = np.random.normal(mean_luck, std_dev_luck, population)
     luck_scores_int = [int(x) for x in luck_scores]
@@ -70,6 +70,8 @@ def event_set(people : list ,who:int) : # change the people array value
     # this value will influent the poisson process of event coming rate
     # wealth will change by the time
     wealth_level = math.ceil(people[who][1] / 5000) + 1
+
+    start_wealth = people[who][1]
 
     # Iq influent the probabilty of event occur
     # ex: IQ = 160 then iq_influence = 60*0.1 = 6 , make A 24.8% + 6%  D: 24.8% - 6% to occur
@@ -110,22 +112,25 @@ def event_set(people : list ,who:int) : # change the people array value
         # an event occur
         random_event = random.choices(values, weights = probabilities_who, k=1)[0]
         if(random_event == "S"):
-            people[who][1] = people[who][1] * 5 + 10000
+            people[who][1] = round(people[who][1] * 5 + 10000)
         elif(random_event == "A"):
-            people[who][1] = people[who][1] * 2 + 500
+            people[who][1] = round(people[who][1] * 2 + 500)
         elif(random_event == "B"):
-            people[who][1] = people[who][1] * 1 
+            people[who][1] = round(people[who][1] * 1)
         elif(random_event == "D"):
-            people[who][1] = people[who][1] / 2
+            people[who][1] = round(people[who][1] * 0.5)
         elif(random_event == "F"):
-            people[who][1] = people[who][1] / 5
+            people[who][1] = round(people[who][1] * 0.2)
         else:
             print("error") 
 
         whose_wealth.append(people[who][1])
         whose_event.append(random_event)
+        final_wealth = whose_wealth[-1]
+    
+    
 
-    return whose_wealth, whose_event
+    return whose_wealth, whose_event, final_wealth, start_wealth
 
 def plot_distribution(people: list, column:int):
     # Plot the distribution of values in column 2
@@ -139,14 +144,33 @@ def plot_distribution(people: list, column:int):
 
 
 def main():
-    people = create_population_birth(10000)
-    sorted_data = sorted(people, key=lambda x: x[1])
-    # for i in sorted_data:
-    #     print(i[2])
-    # plot_distribution(people,2)
-    print(sorted_data[9000])
-    w,e = event_set(sorted_data,9000)
-    print(w)
-    print(e)
+    people = create_population_birth(100000)
+
+    w=[]
+    e=[]
+    final_wealth = []
+    s = []
+    
+
+    for i in range (100000):
+        w_who,e_who,final,start_wealth = event_set(people,i)
+        w.append(w_who)
+        e.append(e_who)
+        s.append(start_wealth)
+        final_wealth.append(final)
+        
+
+# 看最終財富最多的人     
+    # mmm = max(final_wealth)
+    # print(mmm)
+    # the_index = final_wealth.index(mmm)
+# 看初始財富最少的人
+    mmm = min(s)
+    the_index = s.index(mmm)
+    print(w[the_index])
+    print(e[the_index])
+    print(people[the_index])
+    print(s[the_index])
+
 
 main()
