@@ -2,6 +2,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+import csv
 
 # [IQ, wealth ,luck]
 
@@ -145,14 +146,29 @@ def plot_distribution(people: list, column:int):
 
 def main():
     # 10000次模擬 每次 產生10000人
-    for simulation in range(10000):
-        people = create_population_birth(10000)
+
+    simulation_times = 10000
+
+    most_wealth_people = []
+    most_wealth_people_event = []
+    most_wealth_people_wealth_change = []
+
+    least_wealth_people = []
+    least_wealth_people_event = []
+    least_wealth_people_wealth_change = []
+
+    count_poor_to_rich = 0
+    count_rich_maintain = 0
+
+    for simulation in range(simulation_times):
+        num_of_people = 10000
+        people = create_population_birth(num_of_people)
         w=[]
         e=[]
         final_wealth = []
         s = []
 
-        for i in range (10000):
+        for i in range (num_of_people):
             w_who,e_who,final,start_wealth = event_set(people,i)
             w.append(w_who)
             e.append(e_who)
@@ -160,18 +176,100 @@ def main():
             final_wealth.append(final)
             
 # 下面要將要討論的點所產生出的模擬記錄下來，應該適用CSV黨存，或是直接硬幹
+
     # 看最終財富最多的人     
-        # mmm = max(final_wealth)
-        # print(mmm)
-        # the_index = final_wealth.index(mmm)
+        the_max = max(final_wealth)
+        the_max_index = final_wealth.index(the_max)
+
+        to_write = []
+        to_write.append(people[the_max_index])   # 紀錄[IQ,final wealth, Luck]
+        to_write.append(s[the_max_index])
+        most_wealth_people.append(to_write)
+
+
+        if(simulation == simulation_times*0.5):  # 紀錄一個就好
+            csv_file_most_wealth_people_event = "csv_file_most_wealth_people_event.csv"
+            csv_file_most_wealth_people_wealth_change = "csv_file_most_wealth_people_wealth_change.csv"
+            most_wealth_people_event.append(e[the_max_index])
+            most_wealth_people_wealth_change.append(w[the_max_index])
+
+            with open(csv_file_most_wealth_people_event, mode='w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerows(most_wealth_people_event)
+
+            with open(csv_file_most_wealth_people_wealth_change, mode='w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerows(most_wealth_people_wealth_change)
 
     # 看初始財富最少的人
-        mmm = min(s)
-        the_index = s.index(mmm)
-        print(w[the_index])
-        print(e[the_index])
-        print(people[the_index])
-        print(s[the_index])
+        the_min = min(final_wealth)
+        the_min_index = final_wealth.index(the_min)
 
+        to_write2 = []
+        to_write2.append(people[the_min_index])   # 紀錄[IQ,final wealth, Luck]
+        to_write2.append(s[the_min_index])
+        least_wealth_people.append(to_write2)
+
+        if(simulation ==  simulation_times*0.5):  # 紀錄一個就好
+            csv_file_least_wealth_people_event = "csv_file_least_wealth_people_event.csv"
+            csv_file_least_wealth_people_wealth_change = " csv_file_least_wealth_people_wealth_change.csv"
+            least_wealth_people_event.append(e[the_min_index])
+            least_wealth_people_wealth_change.append(w[the_min_index])
+            with open(csv_file_least_wealth_people_event, mode='w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerows(least_wealth_people_event)
+
+            with open(csv_file_least_wealth_people_wealth_change, mode='w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerows(least_wealth_people_wealth_change)
+
+    # 看谷底翻身和維持富有的比例
+        start_most_rich = max(s)
+        start_most_rich_index = s.index(start_most_rich)
+
+        start_most_poor = min(s)
+        start_most_poor_index = s.index(start_most_poor)
+
+        sorted_wealth_data = final_wealth
+        sorted_wealth_data.sort()
+        front_20 = sorted_wealth_data[8000]
+
+        if final_wealth[start_most_rich_index] > front_20:
+            count_rich_maintain += 1
+        if final_wealth[start_most_poor_index] > front_20:
+            count_poor_to_rich += 1
+
+
+        # file1 = open('most_wealth_people.csv',mode='a', newline='')
+        # writer1 = csv.writer(file1)   
+        # writer1.writerow(most_wealth_people)
+        # file1.close()
+
+        # file2 = open('least_wealth_people.csv',mode='a', newline='')
+        # writer2 = csv.writer(file2)   
+        # writer2.writerow(least_wealth_people)
+        # file2.close()
+
+
+        if(simulation != 0):
+            if(simulation % 10 == 0):
+                print("Poor to rich: " + str(count_poor_to_rich/simulation))
+                print("rich still rich: " + str(count_rich_maintain/simulation))
+
+    # 將檔案寫入CSV檔
+    # Specify the file name
+    csv_file_most_wealth_people = "most_wealth_people.csv"
+    csv_file_least_wealth_people = "least_wealth_people.csv"
+
+    # Write the list to a CSV file
+    with open(csv_file_most_wealth_people, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(most_wealth_people)
+
+    with open(csv_file_least_wealth_people, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(least_wealth_people)
+    
+        
 
 main()
